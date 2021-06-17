@@ -1,7 +1,15 @@
 name: first-github-action
-on: [push]
+on:
+  push:
+    branches:
+      # When someone push to `main` branch
+      - main
+      # When someone pushes to `develop` branch
+      - develop
+      # When someone pushes to 'devel' branch
+      -devel
 jobs:
-  write-to-console:
+  sync-in-server:
     runs-on: ubuntu-latest
     steps:
       - run: echo 'Hello world!'
