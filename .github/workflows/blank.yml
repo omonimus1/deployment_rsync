@@ -1,4 +1,4 @@
-name: first-github-action
+name: my-github-action
 on: 
   push:
     branches:
@@ -9,4 +9,5 @@ jobs:
   write-to-console:
     runs-on: ubuntu-latest
     steps:
-      - run: echo 'Hello world from master'
+      - run: 
+          echo 'New push made'
