@@ -19,11 +19,3 @@ jobs:
           RSYNC_USER: ${{ secrets.DEMO_SERVER_USER }}
           RSYNC_PATH: ${{ secrets.DEMO_SERVER_PATH }}
           SSHPASS: ${{ secrets.RSYNC_PASSWORD }}
-
-      - name: Restarting docker
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          command: docker-compose -f ${{ secrets.DEMO_SERVER_PATH }}/local.yml restart
-          host: ${{ secrets.DEMO_SERVER_IP }}
-          username: ${{ secrets.DEMO_SERVER_USER }}
-          privateKey: ${{ secrets.SSH_PRIVATE_KEY}}
