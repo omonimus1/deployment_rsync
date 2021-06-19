@@ -1,13 +1,29 @@
-name: my-github-action
-on: 
+name: Static work CI CD
+
+on:
   push:
-    branches:
-      -main
-      -devel
-      -develop
+    branches: [main]
+
 jobs:
-  write-to-console:
+  deploy_website:
     runs-on: ubuntu-latest
+
     steps:
-      - run: 
-          echo 'New push made'
+      - run: sudo apt-get install sshpass
+      - run: echo rsync to "$RSYNC_USER"@"$RSYNC_HOSTNAME":"$RSYNC_PATH"
+      - run: sshpass -e rsync --delete --progress -u -p --exclude .git* --exclude README.md --progress -avz -e "ssh -o StrictHostKeyChecking=no" ./ "$RSYNC_USER"@"$RSYNC_HOSTNAME":"$RSYNC_PATH"
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} 
+          RSYNC_HOSTNAME: ${{ secrets.DEMO_SERVER_IP }}
+          RSYNC_USER: ${{ secrets.DEMO_SERVER_USER }}
+          RSYNC_PATH: ${{ secrets.DEMO_SERVER_PATH }}
+          SSHPASS: ${{ secrets.RSYNC_PASSWORD }}
+
+      - name: Restarting docker
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: docker-compose -f ${{ secrets.DEMO_SERVER_PATH }}/local.yml restart
+          host: ${{ secrets.DEMO_SERVER_IP }}
+          username: ${{ secrets.DEMO_SERVER_USER }}
+          privateKey: ${{ secrets.SSH_PRIVATE_KEY}}
